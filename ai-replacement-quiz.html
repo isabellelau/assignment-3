@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI替代性评估 | 你的工作有多容易被AI替代？</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #a0aec0;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .progress-text {
+            margin-top: 10px;
+            text-align: center;
+            color: #a0aec0;
+            font-size: 14px;
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .question {
+            font-size: 20px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .option:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateX(5px);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .start-screen, .result-screen {
+            text-align: center;
+        }
+
+        .start-screen h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .start-description {
+            color: #cbd5e0;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .result-screen {
+            display: none;
+        }
+
+        .result-screen.active {
+            display: block;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .score-circle {
+            width: 180px;
+            height: 180px;
+            margin: 30px auto;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border: 3px solid;
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .score-number {
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .score-label {
+            font-size: 14px;
+            color: #a0aec0;
+            margin-top: 5px;
+        }
+
+        .result-title {
+            font-size: 26px;
+            margin: 20px 0;
+            color: #e2e8f0;
+        }
+
+        .result-description {
+            color: #cbd5e0;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .result-advice {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .result-advice h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .result-advice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .result-advice li {
+            padding: 8px 0;
+            color: #cbd5e0;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .result-advice li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        @media (max-width: 640px) {
+            .card {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .question {
+                font-size: 18px;
+            }
+            
+            .option {
+                padding: 14px 16px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Start Screen -->
+            <div class="start-screen" id="startScreen">
+                <h1>🤖 AI替代性评估</h1>
+                <p class="subtitle">你的工作有多容易被AI替代？</p>
+                <p class="start-description">
+                    在AI技术快速发展的今天，不同工作岗位面临着不同程度的自动化风险。<br><br>
+                    本测评将从<strong>工作技能</strong>和<strong>岗位特性</strong>两个维度，评估你的工作被AI替代的可能性。<br><br>
+                    共8道题，每题根据符合程度打分，总分40分。
+                </p>
+                <button class="btn" onclick="startQuiz()">开始测评</button>
+            </div>
+
+            <!-- Quiz Screen -->
+            <div id="quizScreen" style="display: none;">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">问题 1 / 8</div>
+                </div>
+
+                <div id="questionsContainer"></div>
+
+                <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>下一题</button>
+            </div>
+
+            <!-- Result Screen -->
+            <div class="result-screen" id="resultScreen">
+                <h1>📊 评估结果</h1>
+                <div class="score-circle" id="scoreCircle">
+                    <div class="score-number" id="scoreNumber">0</div>
+                    <div class="score-label">总分</div>
+                </div>
+                <div class="result-title" id="resultTitle"></div>
+                <div class="result-description" id="resultDescription"></div>
+                <div class="result-advice" id="resultAdvice"></div>
+                <button class="btn" onclick="restartQuiz()">重新测评</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "你的日常工作中，重复性、标准化的任务占比有多少？",
+                options: [
+                    { text: "几乎没有，每天都在处理新问题", score: 0 },
+                    { text: "少量，约20-30%", score: 1 },
+                    { text: "中等，约40-60%", score: 2 },
+                    { text: "较多，约70-80%", score: 3 },
+                    { text: "绝大部分都是重复性工作", score: 4 }
+                ]
+            },
+            {
+                question: "你的工作需要多少创造性思维和创新能力？",
+                options: [
+                    { text: "核心工作就是创新和创造", score: 0 },
+                    { text: "经常需要提出新想法", score: 1 },
+                    { text: "偶尔需要一些创意", score: 2 },
+                    { text: "很少需要创新", score: 3 },
+                    { text: "基本不需要创造性", score: 4 }
+                ]
+            },
+            {
+                question: "你的工作在多大程度上依赖情感理解和人际沟通？",
+                options: [
+                    { text: "高度依赖，核心是理解人的需求和情感", score: 0 },
+                    { text: "经常需要深度沟通", score: 1 },
+                    { text: "需要一定的沟通能力", score: 2 },
+                    { text: "沟通较少，主要是信息传递", score: 3 },
+                    { text: "几乎不需要人际互动", score: 4 }
+                ]
+            },
+            {
+                question: "你的工作决策复杂度如何？是否需要在不确定性中做判断？",
+                options: [
+                    { text: "经常面对复杂的、没有标准答案的决策", score: 0 },
+                    { text: "需要综合多方因素做判断", score: 1 },
+                    { text: "有一定决策空间，但有明确指引", score: 2 },
+                    { text: "决策相对简单，有既定流程", score: 3 },
+                    { text: "几乎不需要决策，执行即可", score: 4 }
+                ]
+            },
+            {
+                question: "你的工作内容可以被清晰地量化和数据化吗？",
+                options: [
+                    { text: "很难量化，涉及大量主观判断", score: 0 },
+                    { text: "部分可量化，但有很多软性指标", score: 1 },
+                    { text: "半数左右可以数据化", score: 2 },
+                    { text: "大部分可以用数据衡量", score: 3 },
+                    { text: "完全可以数据化和量化", score: 4 }
+                ]
+            },
+            {
+                question: "你的工作需要多少跨学科知识整合和灵活应变？",
+                options: [
+                    { text: "需要整合多领域知识，灵活应对", score: 0 },
+                    { text: "经常需要跨界思考", score: 1 },
+                    { text: "偶尔需要其他领域知识", score: 2 },
+                    { text: "主要在单一专业领域", score: 3 },
+                    { text: "完全在固定知识范围内", score: 4 }
+                ]
+            },
+            {
+                question: "你的工作是否需要实地操作、身体技能或物理空间的特殊性？",
+                options: [
+                    { text: "高度依赖实地操作和身体技能", score: 0 },
+                    { text: "经常需要现场工作", score: 1 },
+                    { text: "偶尔需要到现场", score: 2 },
+                    { text: "主要是办公室/远程工作", score: 3 },
+                    { text: "完全可以远程完成", score: 4 }
+                ]
+            },
+            {
+                question: "你的工作成果评价是否依赖于专业判断和经验积累？",
+                options: [
+                    { text: "高度依赖专业判断和多年经验", score: 0 },
+                    { text: "需要较多经验才能做好", score: 1 },
+                    { text: "有一定经验要求", score: 2 },
+                    { text: "经验帮助不大，主要看规范执行", score: 3 },
+                    { text: "新手也能快速上手", score: 4 }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let totalScore = 0;
+        let answers = [];
+
+        function startQuiz() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('quizScreen').style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            const questionData = questions[currentQuestion];
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question-container active';
+            
+            questionDiv.innerHTML = `
+                <div class="question">${currentQuestion + 1}. ${questionData.question}</div>
+                <div class="options">
+                    ${questionData.options.map((option, index) => `
+                        <div class="option" onclick="selectOption(${index}, ${option.score})">
+                            ${option.text}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            container.appendChild(questionDiv);
+            updateProgress();
+        }
+
+        function selectOption(optionIndex, score) {
+            const options = document.querySelectorAll('.option');
+            options.forEach((opt, idx) => {
+                opt.classList.toggle('selected', idx === optionIndex);
+            });
+            
+            answers[currentQuestion] = score;
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (answers[currentQuestion] === undefined) return;
+            
+            totalScore += answers[currentQuestion];
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+                document.getElementById('nextBtn').disabled = true;
+                if (currentQuestion === questions.length - 1) {
+                    document.getElementById('nextBtn').textContent = '查看结果';
+                }
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `问题 ${currentQuestion + 1} / ${questions.length}`;
+        }
+
+        function showResults() {
+            document.getElementById('quizScreen').style.display = 'none';
+            const resultScreen = document.getElementById('resultScreen');
+            resultScreen.classList.add('active');
+            
+            document.getElementById('scoreNumber').textContent = totalScore;
+            
+            const scoreCircle = document.getElementById('scoreCircle');
+            let resultData;
+            
+            if (totalScore <= 10) {
+                resultData = {
+                    title: "🛡️ AI难以替代你",
+                    color: "#10b981",
+                    description: "恭喜！你的工作高度依赖人类独特的能力——创造力、情感理解、复杂决策和专业判断。这些都是当前AI技术难以替代的核心竞争力。",
+                    advice: [
+                        "继续深化你的专业判断能力和经验积累",
+                        "发展跨学科整合能力，保持学习和创新",
+                        "强化人际网络和情感智能优势",
+                        "关注AI工具，将其作为提升效率的助手"
+                    ]
+                };
+            } else if (totalScore <= 20) {
+                resultData = {
+                    title: "⚖️ 部分工作可能被替代",
+                    color: "#f59e0b",
+                    description: "你的工作中既有AI难以替代的部分，也有一些结构化、可量化的内容可能被自动化。未来的关键在于如何平衡和转型。",
+                    advice: [
+                        "识别哪些工作内容最具人类独特价值",
+                        "主动学习AI工具，提升协作能力",
+                        "向更需要创造性和判断力的方向发展",
+                        "培养情感沟通和复杂问题解决能力"
+                    ]
+                };
+            } else if (totalScore <= 30) {
+                resultData = {
+                    title: "⚠️ 需要警惕并转型",
+                    color: "#f97316",
+                    description: "你的工作中有较大比例的重复性、标准化内容，这些在未来5-10年内可能面临自动化压力。现在是思考转型的重要时机。",
+                    advice: [
+                        "尽快识别工作中不可替代的核心价值",
+                        "投资学习新技能，特别是AI难以完成的领域",
+                        "考虑向管理、创新或人际服务方向转型",
+                        "主动拥抱AI工具，成为人机协作的专家"
+                    ]
+                };
+            } else {
+                resultData = {
+                    title: "🚨 高风险：需要立即行动",
+                    color: "#ef4444",
+                    description: "你的工作高度结构化、可量化且重复性强，这些特征使其成为AI自动化的首要目标。强烈建议尽快规划职业转型。",
+                    advice: [
+                        "立即开始技能转型规划，不要等待",
+                        "学习AI无法替代的技能：创造力、同理心、复杂决策",
+                        "考虑进入需要人类独特价值的新领域",
+                        "将现有专业知识与新技能结合，创造独特价值"
+                    ]
+                };
+            }
+            
+            scoreCircle.style.borderColor = resultData.color;
+            document.getElementById('resultTitle').textContent = resultData.title;
+            document.getElementById('resultDescription').textContent = resultData.description;
+            document.getElementById('resultAdvice').innerHTML = `
+                <h3>💡 建议</h3>
+                <ul>
+                    ${resultData.advice.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            `;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            totalScore = 0;
+            answers = [];
+            document.getElementById('resultScreen').classList.remove('active');
+            document.getElementById('startScreen').style.display = 'block';
+            document.getElementById('nextBtn').textContent = '下一题';
+        }
+    </script>
+</body>
+</html>
