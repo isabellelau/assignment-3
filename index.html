@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI替代性评估 | 你的工作有多容易被AI替代？</title>
+    <title>AI Displacement Risk | How vulnerable is your job?</title>
     <style>
         * {
             margin: 0;
@@ -291,43 +291,40 @@
 <body>
     <div class="container">
         <div class="card">
-            <!-- Start Screen -->
             <div class="start-screen" id="startScreen">
-                <h1>🤖 AI替代性评估</h1>
-                <p class="subtitle">你的工作有多容易被AI替代？</p>
+                <h1>🤖 AI Displacement Assessment</h1>
+                <p class="subtitle">How vulnerable is your current role—or the career you might pursue in the future—to AI replacement?</p>
                 <p class="start-description">
-                    在AI技术快速发展的今天，不同工作岗位面临着不同程度的自动化风险。<br><br>
-                    本测评将从<strong>工作技能</strong>和<strong>岗位特性</strong>两个维度，评估你的工作被AI替代的可能性。<br><br>
-                    共8道题，每题根据符合程度打分，总分40分。
+                    In today's era of rapid technological advancement, different roles face varying degrees of automation risk.<br><br>
+                    This assessment evaluates the likelihood of AI displacement from two dimensions: <strong>Work Skills</strong> and <strong>Job Characteristics</strong>.<br><br>
+                    There are 8 questions. Score based on how well they match your situation. The total score is 40.
                 </p>
-                <button class="btn" onclick="startQuiz()">开始测评</button>
+                <button class="btn" onclick="startQuiz()">Start Assessment</button>
             </div>
 
-            <!-- Quiz Screen -->
             <div id="quizScreen" style="display: none;">
                 <div class="progress-container">
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressBar"></div>
                     </div>
-                    <div class="progress-text" id="progressText">问题 1 / 8</div>
+                    <div class="progress-text" id="progressText">Question 1 / 8</div>
                 </div>
 
                 <div id="questionsContainer"></div>
 
-                <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>下一题</button>
+                <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Question</button>
             </div>
 
-            <!-- Result Screen -->
             <div class="result-screen" id="resultScreen">
-                <h1>📊 评估结果</h1>
+                <h1>📊 Assessment Results</h1>
                 <div class="score-circle" id="scoreCircle">
                     <div class="score-number" id="scoreNumber">0</div>
-                    <div class="score-label">总分</div>
+                    <div class="score-label">Total Score</div>
                 </div>
                 <div class="result-title" id="resultTitle"></div>
                 <div class="result-description" id="resultDescription"></div>
                 <div class="result-advice" id="resultAdvice"></div>
-                <button class="btn" onclick="restartQuiz()">重新测评</button>
+                <button class="btn" onclick="restartQuiz()">Restart Assessment</button>
             </div>
         </div>
     </div>
@@ -335,83 +332,83 @@
     <script>
         const questions = [
             {
-                question: "你的日常工作中，重复性、标准化的任务占比有多少？",
+                question: "What proportion of your daily tasks are repetitive and standardized?",
                 options: [
-                    { text: "几乎没有，每天都在处理新问题", score: 0 },
-                    { text: "少量，约20-30%", score: 1 },
-                    { text: "中等，约40-60%", score: 2 },
-                    { text: "较多，约70-80%", score: 3 },
-                    { text: "绝大部分都是重复性工作", score: 4 }
+                    { text: "Almost none; dealing with new problems daily", score: 0 },
+                    { text: "A small amount, about 20-30%", score: 1 },
+                    { text: "Moderate, about 40-60%", score: 2 },
+                    { text: "A large amount, about 70-80%", score: 3 },
+                    { text: "The vast majority of tasks are repetitive", score: 4 }
                 ]
             },
             {
-                question: "你的工作需要多少创造性思维和创新能力？",
+                question: "How much creative thinking and innovation does your job require?",
                 options: [
-                    { text: "核心工作就是创新和创造", score: 0 },
-                    { text: "经常需要提出新想法", score: 1 },
-                    { text: "偶尔需要一些创意", score: 2 },
-                    { text: "很少需要创新", score: 3 },
-                    { text: "基本不需要创造性", score: 4 }
+                    { text: "Innovation and creativity are the core of the job", score: 0 },
+                    { text: "Frequently requires generating new ideas", score: 1 },
+                    { text: "Occasionally requires some creativity", score: 2 },
+                    { text: "Rarely requires innovation", score: 3 },
+                    { text: "Basically requires no creativity", score: 4 }
                 ]
             },
             {
-                question: "你的工作在多大程度上依赖情感理解和人际沟通？",
+                question: "To what extent does your job rely on emotional intelligence and interpersonal communication?",
                 options: [
-                    { text: "高度依赖，核心是理解人的需求和情感", score: 0 },
-                    { text: "经常需要深度沟通", score: 1 },
-                    { text: "需要一定的沟通能力", score: 2 },
-                    { text: "沟通较少，主要是信息传递", score: 3 },
-                    { text: "几乎不需要人际互动", score: 4 }
+                    { text: "Highly reliant; understanding human needs and emotions is core", score: 0 },
+                    { text: "Frequently requires in-depth communication", score: 1 },
+                    { text: "Requires a certain level of communication skills", score: 2 },
+                    { text: "Minimal communication; mainly passing information", score: 3 },
+                    { text: "Almost no interpersonal interaction required", score: 4 }
                 ]
             },
             {
-                question: "你的工作决策复杂度如何？是否需要在不确定性中做判断？",
+                question: "How complex is decision-making in your role? Do you need to make judgments amidst uncertainty?",
                 options: [
-                    { text: "经常面对复杂的、没有标准答案的决策", score: 0 },
-                    { text: "需要综合多方因素做判断", score: 1 },
-                    { text: "有一定决策空间，但有明确指引", score: 2 },
-                    { text: "决策相对简单，有既定流程", score: 3 },
-                    { text: "几乎不需要决策，执行即可", score: 4 }
+                    { text: "Frequently face complex decisions without standard answers", score: 0 },
+                    { text: "Need to synthesize multiple factors to make judgments", score: 1 },
+                    { text: "Some decision-making space, but with clear guidelines", score: 2 },
+                    { text: "Decision-making is relatively simple with established processes", score: 3 },
+                    { text: "Almost no decision-making required; just execution", score: 4 }
                 ]
             },
             {
-                question: "你的工作内容可以被清晰地量化和数据化吗？",
+                question: "Can your work output be clearly quantified and digitized?",
                 options: [
-                    { text: "很难量化，涉及大量主观判断", score: 0 },
-                    { text: "部分可量化，但有很多软性指标", score: 1 },
-                    { text: "半数左右可以数据化", score: 2 },
-                    { text: "大部分可以用数据衡量", score: 3 },
-                    { text: "完全可以数据化和量化", score: 4 }
+                    { text: "Hard to quantify; involves a lot of subjective judgment", score: 0 },
+                    { text: "Partially quantifiable, but has many soft metrics", score: 1 },
+                    { text: "About half can be digitized", score: 2 },
+                    { text: "Most of it can be measured by data", score: 3 },
+                    { text: "Completely quantifiable and digitizable", score: 4 }
                 ]
             },
             {
-                question: "你的工作需要多少跨学科知识整合和灵活应变？",
+                question: "How much interdisciplinary knowledge integration and flexibility does your job demand?",
                 options: [
-                    { text: "需要整合多领域知识，灵活应对", score: 0 },
-                    { text: "经常需要跨界思考", score: 1 },
-                    { text: "偶尔需要其他领域知识", score: 2 },
-                    { text: "主要在单一专业领域", score: 3 },
-                    { text: "完全在固定知识范围内", score: 4 }
+                    { text: "Requires integrating knowledge from multiple fields and adapting flexibly", score: 0 },
+                    { text: "Frequently requires cross-disciplinary thinking", score: 1 },
+                    { text: "Occasionally requires knowledge from other fields", score: 2 },
+                    { text: "Mainly confined to a single professional field", score: 3 },
+                    { text: "Completely within a fixed scope of knowledge", score: 4 }
                 ]
             },
             {
-                question: "你的工作是否需要实地操作、身体技能或物理空间的特殊性？",
+                question: "Does your job require on-site operations, physical skills, or specific physical spaces?",
                 options: [
-                    { text: "高度依赖实地操作和身体技能", score: 0 },
-                    { text: "经常需要现场工作", score: 1 },
-                    { text: "偶尔需要到现场", score: 2 },
-                    { text: "主要是办公室/远程工作", score: 3 },
-                    { text: "完全可以远程完成", score: 4 }
+                    { text: "Highly reliant on on-site operations and physical skills", score: 0 },
+                    { text: "Frequently requires working on-site", score: 1 },
+                    { text: "Occasionally requires visiting the site", score: 2 },
+                    { text: "Mainly office-based or remote work", score: 3 },
+                    { text: "Can be completed entirely remotely", score: 4 }
                 ]
             },
             {
-                question: "你的工作成果评价是否依赖于专业判断和经验积累？",
+                question: "Does the evaluation of your work depend on professional judgment and accumulated experience?",
                 options: [
-                    { text: "高度依赖专业判断和多年经验", score: 0 },
-                    { text: "需要较多经验才能做好", score: 1 },
-                    { text: "有一定经验要求", score: 2 },
-                    { text: "经验帮助不大，主要看规范执行", score: 3 },
-                    { text: "新手也能快速上手", score: 4 }
+                    { text: "Highly dependent on professional judgment and years of experience", score: 0 },
+                    { text: "Requires considerable experience to perform well", score: 1 },
+                    { text: "Has certain experience requirements", score: 2 },
+                    { text: "Experience doesn't help much; relies mainly on standard execution", score: 3 },
+                    { text: "Beginners can get up to speed quickly", score: 4 }
                 ]
             }
         ];
@@ -469,7 +466,7 @@
                 loadQuestion();
                 document.getElementById('nextBtn').disabled = true;
                 if (currentQuestion === questions.length - 1) {
-                    document.getElementById('nextBtn').textContent = '查看结果';
+                    document.getElementById('nextBtn').textContent = 'View Results';
                 }
             } else {
                 showResults();
@@ -479,7 +476,7 @@
         function updateProgress() {
             const progress = ((currentQuestion + 1) / questions.length) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
-            document.getElementById('progressText').textContent = `问题 ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('progressText').textContent = `Question ${currentQuestion + 1} / ${questions.length}`;
         }
 
         function showResults() {
@@ -494,50 +491,50 @@
             
             if (totalScore <= 10) {
                 resultData = {
-                    title: "🛡️ AI难以替代你",
+                    title: "🛡️ Hard for AI to Replace",
                     color: "#10b981",
-                    description: "恭喜！你的工作高度依赖人类独特的能力——创造力、情感理解、复杂决策和专业判断。这些都是当前AI技术难以替代的核心竞争力。",
+                    description: "Congratulations! Your job heavily relies on unique human capabilities—creativity, emotional intelligence, complex decision-making, and professional judgment. These are core competencies that current AI technologies struggle to replicate.",
                     advice: [
-                        "继续深化你的专业判断能力和经验积累",
-                        "发展跨学科整合能力，保持学习和创新",
-                        "强化人际网络和情感智能优势",
-                        "关注AI工具，将其作为提升效率的助手"
+                        "Continue to deepen your professional judgment and accumulate experience.",
+                        "Develop interdisciplinary integration skills; keep learning and innovating.",
+                        "Strengthen your interpersonal network and emotional intelligence advantages.",
+                        "Keep an eye on AI tools and use them as assistants to boost efficiency."
                     ]
                 };
             } else if (totalScore <= 20) {
                 resultData = {
-                    title: "⚖️ 部分工作可能被替代",
+                    title: "⚖️ Partially Replaceable",
                     color: "#f59e0b",
-                    description: "你的工作中既有AI难以替代的部分，也有一些结构化、可量化的内容可能被自动化。未来的关键在于如何平衡和转型。",
+                    description: "Your job contains elements that are hard for AI to replace, but also structured, quantifiable tasks that could be automated. The key to the future lies in balance and transition.",
                     advice: [
-                        "识别哪些工作内容最具人类独特价值",
-                        "主动学习AI工具，提升协作能力",
-                        "向更需要创造性和判断力的方向发展",
-                        "培养情感沟通和复杂问题解决能力"
+                        "Identify which aspects of your work hold the most unique human value.",
+                        "Proactively learn AI tools to enhance human-machine collaboration.",
+                        "Pivot towards tasks that require more creativity and judgment.",
+                        "Cultivate emotional communication and complex problem-solving skills."
                     ]
                 };
             } else if (totalScore <= 30) {
                 resultData = {
-                    title: "⚠️ 需要警惕并转型",
+                    title: "⚠️ Caution & Transition Needed",
                     color: "#f97316",
-                    description: "你的工作中有较大比例的重复性、标准化内容，这些在未来5-10年内可能面临自动化压力。现在是思考转型的重要时机。",
+                    description: "A large proportion of your work is repetitive and standardized, which may face automation pressure in the next 5-10 years. Now is a crucial time to consider transitioning.",
                     advice: [
-                        "尽快识别工作中不可替代的核心价值",
-                        "投资学习新技能，特别是AI难以完成的领域",
-                        "考虑向管理、创新或人际服务方向转型",
-                        "主动拥抱AI工具，成为人机协作的专家"
+                        "Identify the irreplaceable core value in your work as soon as possible.",
+                        "Invest in learning new skills, especially in areas AI cannot fulfill.",
+                        "Consider transitioning toward management, innovation, or interpersonal services.",
+                        "Actively embrace AI tools to become an expert in human-machine collaboration."
                     ]
                 };
             } else {
                 resultData = {
-                    title: "🚨 高风险：需要立即行动",
+                    title: "🚨 High Risk: Immediate Action Required",
                     color: "#ef4444",
-                    description: "你的工作高度结构化、可量化且重复性强，这些特征使其成为AI自动化的首要目标。强烈建议尽快规划职业转型。",
+                    description: "Your job is highly structured, quantifiable, and repetitive, making it a primary target for AI automation. We strongly recommend planning a career transition immediately.",
                     advice: [
-                        "立即开始技能转型规划，不要等待",
-                        "学习AI无法替代的技能：创造力、同理心、复杂决策",
-                        "考虑进入需要人类独特价值的新领域",
-                        "将现有专业知识与新技能结合，创造独特价值"
+                        "Start planning your skill transition immediately; do not wait.",
+                        "Learn skills AI cannot replace: creativity, empathy, and complex decision-making.",
+                        "Consider entering new fields that require unique human value.",
+                        "Combine your existing professional knowledge with new skills to create unique value."
                     ]
                 };
             }
@@ -546,7 +543,7 @@
             document.getElementById('resultTitle').textContent = resultData.title;
             document.getElementById('resultDescription').textContent = resultData.description;
             document.getElementById('resultAdvice').innerHTML = `
-                <h3>💡 建议</h3>
+                <h3>💡 Recommendations</h3>
                 <ul>
                     ${resultData.advice.map(item => `<li>${item}</li>`).join('')}
                 </ul>
@@ -559,7 +556,7 @@
             answers = [];
             document.getElementById('resultScreen').classList.remove('active');
             document.getElementById('startScreen').style.display = 'block';
-            document.getElementById('nextBtn').textContent = '下一题';
+            document.getElementById('nextBtn').textContent = 'Next Question';
         }
     </script>
 </body>
